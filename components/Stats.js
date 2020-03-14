@@ -6,11 +6,11 @@ const StatBlock = styled.div`
   box-shadow: 1px 1px 6px 1px grey;
   font-size: 2rem;
   padding: 20px;
+  grid-gap: 1rem;
 `;
 
 export default function Stats({ url = "https://covid19.mathdro.id/api" }) {
   const [stats, loading, error] = useStats(url);
-  console.log(error);
   if (error) return <p>Error fetching: {error}</p>;
   if (!stats || loading) return <p>Loading...</p>;
   const { confirmed, recovered, deaths } = stats;

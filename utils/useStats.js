@@ -19,9 +19,8 @@ export default function useStats(url = "https://covid19.mathdro.id/api") {
         return json;
       })
       .catch(error => {
-        setError(error);
+        setError(error.message);
       });
-    console.log(data);
     setStats(data);
     setLoading(false);
   }, [url]);
