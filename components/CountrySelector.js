@@ -8,6 +8,7 @@ import styled from "styled-components";
 const Container = styled.div`
   background: white;
   grid-column: 1 / -1;
+  max-width: 100%;
 `;
 
 const Button = styled.button`
@@ -24,6 +25,7 @@ const Button = styled.button`
   margin-right: 20px;
   border-radius: 4px;
   cursor: pointer;
+  margin-top: 0.5rem;
   transition: all 0.3s ease-in-out;
 
   &:hover {
@@ -38,11 +40,12 @@ const Button = styled.button`
 const Select = styled.select`
   font-family: Roboto, sans-serif;
   font-size: 1rem;
-  padding: 20px;
+  max-width: 280px;
+  width: auto;
   background: white;
   height: 40px;
   display: block;
-  margin: 10px 0 0;
+  margin: 10px 0;
 `;
 
 const getUrl = country => {
@@ -82,7 +85,7 @@ export default function CountrySelector() {
             );
           })}
         </Select>
-        <p>Or pick a favorite:</p>
+        <p>Or pick a preset one:</p>
         <Button onClick={() => setCountry(getUrl("GB"))}>UK</Button>
         <Button onClick={() => setCountry(getUrl("IT"))}>Italy</Button>
       </Container>
