@@ -1,3 +1,12 @@
+## Data reliability
+
+Johns Hopkins university, the source of almost all of the charts, maps
+and tables below, is currently experiencing technical issues. Data
+might be incorrect.
+
+For a much better graphical visualisation, please visit WHO's site at
+https://experience.arcgis.com/experience/685d0ace521648f8a5beeeee1b9125cd
+
 ## Coronavirus counter
 
 Check it live at https://coronavirus-api-counter.now.sh/
