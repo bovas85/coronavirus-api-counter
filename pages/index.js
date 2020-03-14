@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Stats from "../components/Stats";
 import CountrySelector from "../components/CountrySelector";
 
-const StatGrid = styled.div`
+const StatGrid = styled.main`
   @import url("https://fonts.googleapis.com/css?family=Roboto&display=swap");
   display: grid;
   max-width: 1200px;
@@ -17,9 +17,14 @@ const StatGrid = styled.div`
   }
 `;
 
-const Heading = styled.h1`
+const Heading = styled.header`
+  font-family: Roboto, sans-serif;
+  font-size: 1.2rem;
   margin: 1rem auto;
-  grid-column: 1 / -1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Container = styled.div`
@@ -27,12 +32,32 @@ const Container = styled.div`
   grid-column: 1 / -1;
 `;
 
+const Footer = styled.footer`
+  background: white;
+  grid-column: 1 / -1;
+`;
+
 export default function IndexPage() {
   return (
-    <StatGrid>
-      <Heading>Coronavirus API counter</Heading>
-      <Stats />
-      <CountrySelector />
-    </StatGrid>
+    <>
+      <Heading>
+        <h1>Coronavirus API counter</h1>
+      </Heading>
+      <StatGrid>
+        <Stats />
+        <CountrySelector />
+        <Footer>
+          <p>
+            Github:{" "}
+            <a
+              href="https://github.com/bovas85/coronavirus-api-counter"
+              target="_blank"
+            >
+              https://github.com/bovas85/coronavirus-api-counter
+            </a>
+          </p>
+        </Footer>
+      </StatGrid>
+    </>
   );
 }
