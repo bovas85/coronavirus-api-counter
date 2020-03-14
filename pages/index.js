@@ -40,6 +40,7 @@ const StatGrid = styled.div`
   grid-gap: 1rem;
   min-height: 55vh;
   margin: 0 auto;
+  margin-bottom: 1rem;
   padding: 0 0.5rem;
 
   @media (min-width: 400px) {
