@@ -11,3 +11,20 @@ This small app is based on WesBos tutorial idea and uses the amazing COVID-19 AP
 ## How to start
 
 `yarn start` or `npm run start`
+
+## How to contribute
+
+A few ways:
+
+- Open an issue or feature request
+- Fork the repo and make a PR
+
+Please be sensible and respect the people who are suffering and lost someone.
+
+## COVID-19 Donations
+
+Please donate directly to the WHO by following this link:
+
+https://www.who.int/emergencies/diseases/novel-coronavirus-2019/donate?fbclid=IwAR1QO24Xg7e18zz3FtFYHS7xI1MJWIsUlFI0evv0wGR3wYUITDYi6J-IPGQ
+
+Thank you.
