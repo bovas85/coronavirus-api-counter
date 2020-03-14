@@ -62,6 +62,12 @@ const Heading = styled.header`
   justify-content: center;
 `;
 
+const Paragraph = styled.p`
+  margin: 0 auto;
+  text-align: center;
+  grid-column: 1 / -1;
+`;
+
 const Container = styled.div`
   background: white;
   grid-column: 1 / -1;
@@ -90,6 +96,11 @@ export default function IndexPage() {
         <Heading>
           <h1>Coronavirus API counter</h1>
         </Heading>
+        <Paragraph>
+          Johns Hopkins university, the source of almost all of the charts, maps
+          and tables below, is currently experiencing technical issues. Data
+          might be incorrect.
+        </Paragraph>
         <Stats />
         <CountrySelector />
         <Footer>
