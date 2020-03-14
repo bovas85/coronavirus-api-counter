@@ -4,7 +4,7 @@ import styled from "styled-components";
 const StatBlock = styled.div`
   background: #fafafa;
   box-shadow: 1px 1px 6px 1px grey;
-  font-size: 2rem;
+  font-size: 1.6rem;
   padding: 20px;
   grid-gap: 1rem;
 `;
