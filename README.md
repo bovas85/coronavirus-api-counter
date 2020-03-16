@@ -1,3 +1,7 @@
+<p align="center">
+  <img width="500" src="https://covid19.mathdro.id/api/og" />
+</p>
+
 ## Data reliability
 
 Johns Hopkins university, the source of almost all of the charts, maps
