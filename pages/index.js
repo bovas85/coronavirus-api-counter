@@ -96,19 +96,6 @@ export default function IndexPage() {
         <Heading>
           <h1>Coronavirus API counter</h1>
         </Heading>
-        <Paragraph>
-          Johns Hopkins university, the source of almost all of the charts, maps
-          and tables below, is currently experiencing technical issues. Data
-          might be incorrect.
-          <br />
-          For a much better graphical visualisation, please visit WHO's site at{" "}
-          <Link
-            href="https://experience.arcgis.com/experience/685d0ace521648f8a5beeeee1b9125cd"
-            target="_blank"
-          >
-            https://experience.arcgis.com/experience/685d0ace521648f8a5beeeee1b9125cd
-          </Link>
-        </Paragraph>
         <Stats />
         <CountrySelector />
         <Footer>

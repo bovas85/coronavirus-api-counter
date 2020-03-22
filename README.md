@@ -2,15 +2,6 @@
   <img width="500" src="https://covid19.mathdro.id/api/og" />
 </p>
 
-## Data reliability
-
-Johns Hopkins university, the source of almost all of the charts, maps
-and tables below, is currently experiencing technical issues. Data
-might be incorrect.
-
-For a much better graphical visualisation, please visit WHO's site at
-https://experience.arcgis.com/experience/685d0ace521648f8a5beeeee1b9125cd
-
 ## Coronavirus counter
 
 Check it live at https://coronavirus-api-counter.now.sh/
@@ -41,3 +32,8 @@ Please donate directly to the WHO by following this link:
 https://www.who.int/emergencies/diseases/novel-coronavirus-2019/donate?fbclid=IwAR1QO24Xg7e18zz3FtFYHS7xI1MJWIsUlFI0evv0wGR3wYUITDYi6J-IPGQ
 
 Thank you.
+
+## Other visualisations
+
+A map visualisation can also be found here:
+https://experience.arcgis.com/experience/685d0ace521648f8a5beeeee1b9125cd
