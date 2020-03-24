@@ -66,6 +66,8 @@ export default function CountrySelector() {
 
   if (!countries || loading) return null;
   if (error) return <p>Error fetching</p>;
+
+  console.log(countries);
   return (
     <>
       <Container>
@@ -76,11 +78,14 @@ export default function CountrySelector() {
           id="country-select"
         >
           <option value="">Please choose...</option>
-          {Object.keys(countries.countries).map(country => {
-            const value = countries.countries[country];
+          {Object.keys(countries.countries).map(index => {
+            const country = countries.countries[index];
             return (
-              <option key={`${country}-${value}`} value={value}>
-                {country}
+              <option
+                key={`${country.name}-${country.iso3}`}
+                value={country.iso2}
+              >
+                {country.name}
               </option>
             );
           })}
