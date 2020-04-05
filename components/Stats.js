@@ -48,7 +48,7 @@ export default function Stats({
   if (!stats || loading) return <p>Loading...</p>;
 
   const searchStats = () => {
-    if (!yTotalStats) return;
+    if (!yTotalStats || !yTotalStats2) return;
     const res = yTotalStats.find((stat) => {
       return stat.combinedKey === countryName;
     });
@@ -81,13 +81,13 @@ export default function Stats({
       <StatBlock>
         <p>Recovered: {recovered?.value}</p>
         {!!Number(recDifference) && (
-          <Difference color={recDifference > 0 ? 'green' : null}>{recDifference} difference</Difference>
+          <Difference color={Number(recDifference) > 0 ? 'green' : null}>{recDifference} difference</Difference>
         )}
       </StatBlock>
       <StatBlock>
         <p>Deaths: {deaths?.value}</p>
         {!!Number(deathDifference) && (
-          <Difference color={deathDifference < 0 ? 'green' : null}>{deathDifference} difference</Difference>
+          <Difference color={Number(deathDifference) < 0 ? 'green' : null}>{deathDifference} difference</Difference>
         )}
       </StatBlock>
     </>
