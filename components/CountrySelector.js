@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import useStats from "../utils/useStats";
+import useCountryFinder from "../utils/useCountryFinder";
 import Stats from "./Stats";
 
 import styled from "styled-components";
@@ -48,26 +49,32 @@ const Select = styled.select`
   margin: 10px 0;
 `;
 
-const getUrl = country => {
-  return `https://covid19.mathdro.id/api/countries/${country}`;
-};
+const Heading = styled.h1`
+  margin-top: 1rem;
+`;
 
 export default function CountrySelector() {
   const [country, setCountry] = useState(
     "https://covid19.mathdro.id/api/countries/GB"
   );
+  const [countryName, setCountryName] = useState("United Kingdom");
   const [countries, loading, error] = useStats(
     "https://covid19.mathdro.id/api/countries"
   );
 
-  const handleChange = event => {
+  const getUrl = (country) => {
+    const { name = null } = useCountryFinder(countries, country);
+    setCountryName(name);
+    return `https://covid19.mathdro.id/api/countries/${country}`;
+  };
+
+  const handleChange = (event) => {
     setCountry(getUrl(event.target.value));
   };
 
   if (!countries || loading) return null;
   if (error) return <p>Error fetching</p>;
 
-  console.log(countries);
   return (
     <>
       <Container>
@@ -78,7 +85,7 @@ export default function CountrySelector() {
           id="country-select"
         >
           <option value="">Please choose...</option>
-          {Object.keys(countries.countries).map(index => {
+          {Object.keys(countries.countries).map((index) => {
             const country = countries.countries[index];
             return (
               <option
@@ -93,8 +100,10 @@ export default function CountrySelector() {
         <p>Or pick a preset one:</p>
         <Button onClick={() => setCountry(getUrl("GB"))}>UK</Button>
         <Button onClick={() => setCountry(getUrl("IT"))}>Italy</Button>
+
+        <Heading>{country.name || "Selected country:"}</Heading>
       </Container>
-      <Stats url={country} />
+      <Stats url={country} countryName={countryName} />
     </>
   );
 }
