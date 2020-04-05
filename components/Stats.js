@@ -17,16 +17,22 @@ const Difference = styled.p`
 `;
 
 const yesterday = new Date(Date.now() - 864e5);
+const twoAgo = new Date(Date.now() - (864e5 * 2));
 
 const dtf = new Intl.DateTimeFormat("en", {
   year: "numeric",
   month: "numeric",
   day: "2-digit",
 });
-const [{ value: mo }, , { value: da }, , { value: ye }] = dtf.formatToParts(
+const [{ value: mm }, , { value: dd }, , { value: yr }] = dtf.formatToParts(
   yesterday
 );
-const yesterdayUrl = `https://covid19.mathdro.id/api/daily/${da}-${mo}-${ye}`;
+const [{ value: mm2 }, , { value: dd2 }, , { value: yr2 }] = dtf.formatToParts(
+  twoAgo
+);
+
+const yesterdayUrl = `https://covid19.mathdro.id/api/daily/${dd}-${mm}-${yr}`;
+const twoAgoUrl = `https://covid19.mathdro.id/api/daily/${dd2}-${mm2}-${yr2}`;
 
 export default function Stats({
   countryName,
@@ -34,7 +40,12 @@ export default function Stats({
 }) {
   const [stats, loading, error] = useStats(url);
   const [yTotalStats, yTotalLoading, yTotalError] = useStats(yesterdayUrl);
+  const [yTotalStats2, yTotalLoading2, yTotalError2] = useStats(twoAgoUrl);
   const [yStats, setYstats] = useState({});
+  const [twoStats, setTwostats] = useState({});
+
+  if (error) return <p>Error fetching: {error}</p>;
+  if (!stats || loading) return <p>Loading...</p>;
 
   const searchStats = () => {
     if (!yTotalStats) return;
@@ -42,39 +53,41 @@ export default function Stats({
       return stat.combinedKey === countryName;
     });
     setYstats(res);
+    const res2 = yTotalStats2.find((stat) => {
+      return stat.combinedKey === countryName;
+    });
+    setTwostats(res2);
   };
 
-  const getYstats = useMemo(searchStats, [yTotalStats, countryName]);
+  const getYstats = useMemo(searchStats, [yTotalStats, yTotalStats2, countryName]);
 
-  if (error) return <p>Error fetching: {error}</p>;
-  if (!stats || loading) return <p>Loading...</p>;
   const { confirmed, recovered, deaths } = stats;
   let deathDifference = 0,
     recDifference = 0,
     confirmedDifference = 0;
   if (yStats) {
-    confirmedDifference = Number(confirmed?.value) - Number(yStats?.confirmed);
-    deathDifference = Number(deaths?.value) - Number(yStats?.deaths);
-    recDifference = Number(recovered?.value) - Number(yStats?.recovered);
+    confirmedDifference = Number(yStats?.confirmed) - Number(twoStats?.confirmed);
+    deathDifference = Number(yStats?.deaths) - Number(twoStats?.deaths);
+    recDifference = Number(yStats?.recovered) - Number(twoStats?.recovered);
   }
   return (
     <>
       <StatBlock>
         <p>Confirmed: {confirmed?.value}</p>
         {!!Number(confirmedDifference) && (
-          <Difference>+{confirmedDifference} from yesterday</Difference>
+          <Difference>{confirmedDifference} difference</Difference>
         )}
       </StatBlock>
       <StatBlock>
         <p>Recovered: {recovered?.value}</p>
         {!!Number(recDifference) && (
-          <Difference color="green">+{recDifference} from yesterday</Difference>
+          <Difference color={recDifference > 0 ? 'green' : null}>{recDifference} difference</Difference>
         )}
       </StatBlock>
       <StatBlock>
         <p>Deaths: {deaths?.value}</p>
         {!!Number(deathDifference) && (
-          <Difference>+{deathDifference} from yesterday</Difference>
+          <Difference color={deathDifference < 0 ? 'green' : null}>{deathDifference} difference</Difference>
         )}
       </StatBlock>
     </>
