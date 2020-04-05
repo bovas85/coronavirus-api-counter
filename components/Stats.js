@@ -61,19 +61,19 @@ export default function Stats({
     <>
       <StatBlock>
         <p>Confirmed: {confirmed?.value}</p>
-        {Number(confirmedDifference) && (
+        {!!Number(confirmedDifference) && (
           <Difference>+{confirmedDifference} from yesterday</Difference>
         )}
       </StatBlock>
       <StatBlock>
         <p>Recovered: {recovered?.value}</p>
-        {Number(recDifference) && (
+        {!!Number(recDifference) && (
           <Difference color="green">+{recDifference} from yesterday</Difference>
         )}
       </StatBlock>
       <StatBlock>
         <p>Deaths: {deaths?.value}</p>
-        {Number(deathDifference) && (
+        {!!Number(deathDifference) && (
           <Difference>+{deathDifference} from yesterday</Difference>
         )}
       </StatBlock>
