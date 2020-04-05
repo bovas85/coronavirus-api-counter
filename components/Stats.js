@@ -59,13 +59,13 @@ export default function Stats({
     setTwostats(res2);
   };
 
-  const getYstats = useMemo(searchStats, [yTotalStats, yTotalStats2, countryName]);
+  useMemo(searchStats, [yTotalStats, yTotalStats2, countryName]);
 
   const { confirmed, recovered, deaths } = stats;
   let deathDifference = 0,
     recDifference = 0,
     confirmedDifference = 0;
-  if (yStats) {
+  if (yStats && twoStats) {
     confirmedDifference = Number(yStats?.confirmed) - Number(twoStats?.confirmed);
     deathDifference = Number(yStats?.deaths) - Number(twoStats?.deaths);
     recDifference = Number(yStats?.recovered) - Number(twoStats?.recovered);
