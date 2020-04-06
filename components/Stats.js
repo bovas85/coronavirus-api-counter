@@ -96,10 +96,17 @@ export default function Stats({
   let deathDifference = 0,
     recDifference = 0,
     confirmedDifference = 0;
+  let isDeathIncreased = true;
+  let deathDiffFromYesterday;
+  let deathDiffFromTwoDaysAgo;
   if (yStats && twoStats) {
+    deathDiffFromYesterday = Number(deaths?.value) - Number(yStats?.deaths);
+    deathDiffFromTwoDaysAgo = Number(yStats?.deaths) - Number(twoStats?.deaths);
+    isDeathIncreased = deathDiffFromYesterday > deathDiffFromTwoDaysAgo;
+
     confirmedDifference =
       Number(yStats?.confirmed) - Number(twoStats?.confirmed);
-    deathDifference = Number(yStats?.deaths) - Number(twoStats?.deaths);
+    deathDifference = deathDiffFromYesterday - deathDiffFromTwoDaysAgo;
     recDifference = Number(yStats?.recovered) - Number(twoStats?.recovered);
   }
   return (
@@ -126,10 +133,14 @@ export default function Stats({
       </StatBlock>
       <StatBlock>
         <p>Deaths: {deaths?.value}</p>
-        {!!Number(deathDifference) >= 0 && (
-          <Difference color={deathDifference < 0 ? "green" : "crimson"}>
-            {typeof deathDifference === "number" && deathDifference > 0
-              ? `Increased by ${deathDifference} from ${twoDaysAgoDate}`
+        {!!Number(deathDifference) && (
+          <Difference color={isDeathIncreased ? "crimson" : "green"}>
+            {typeof deathDifference === "number"
+              ? `${
+                  deathDifference < 0
+                    ? `Decreased by ${deathDifference * -1} per day`
+                    : `Increased by ${deathDifference} per day`
+                } from ${twoDaysAgoDate}`
               : deathDifference === 0 && `Same as yesterday`}
           </Difference>
         )}
