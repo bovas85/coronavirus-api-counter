@@ -60,6 +60,10 @@ const Heading = styled.header`
   grid-column: 1 / -1;
   display: flex;
   justify-content: center;
+
+  > h2 {
+    margin-right: auto;
+  }
 `;
 
 const Paragraph = styled.p`
@@ -95,6 +99,9 @@ export default function IndexPage() {
       <StatGrid>
         <Heading>
           <h1>Coronavirus API counter</h1>
+        </Heading>
+        <Heading>
+          <h2>Global view:</h2>
         </Heading>
         <Stats />
         <CountrySelector />

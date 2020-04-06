@@ -6,6 +6,7 @@ import Stats from "./Stats";
 
 import styled from "styled-components";
 
+/* local styles ---------- */
 const Container = styled.div`
   background: white;
   grid-column: 1 / -1;
@@ -52,6 +53,7 @@ const Select = styled.select`
 const Heading = styled.h1`
   margin-top: 1rem;
 `;
+// -----------------------
 
 export default function CountrySelector() {
   const [country, setCountry] = useState(

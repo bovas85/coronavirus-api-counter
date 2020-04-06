@@ -3,6 +3,7 @@ import { useState, useMemo, useCallback, useEffect } from "react";
 import useStats from "../utils/useStats";
 import styled from "styled-components";
 
+/* local styles ---------- */
 const StatBlock = styled.div`
   background: #fafafa;
   box-shadow: 1px 1px 6px 1px grey;
@@ -15,15 +16,23 @@ const Difference = styled.p`
   font-size: 0.9rem;
   color: ${({ color = "crimson" }) => color};
 `;
+// ------------------------------------------
 
+// date - 1/2 days
 const yesterday = new Date(Date.now() - 864e5);
-const twoAgo = new Date(Date.now() - (864e5 * 2));
+const twoAgo = new Date(Date.now() - 864e5 * 2);
 
 const dtf = new Intl.DateTimeFormat("en", {
   year: "numeric",
-  month: "numeric",
+  month: "2-digit",
   day: "2-digit",
 });
+const dtfPretty = new Intl.DateTimeFormat("en", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+// dates for API
 const [{ value: mm }, , { value: dd }, , { value: yr }] = dtf.formatToParts(
   yesterday
 );
@@ -31,8 +40,30 @@ const [{ value: mm2 }, , { value: dd2 }, , { value: yr2 }] = dtf.formatToParts(
   twoAgo
 );
 
-const yesterdayUrl = `https://covid19.mathdro.id/api/daily/${dd}-${mm}-${yr}`;
-const twoAgoUrl = `https://covid19.mathdro.id/api/daily/${dd2}-${mm2}-${yr2}`;
+// pretty date to display
+const [
+  { value: mm3 },
+  ,
+  { value: dd3 },
+  ,
+  { value: yr3 },
+] = dtfPretty.formatToParts(twoAgo);
+
+const yesterdayUrl = `https://covid19.mathdro.id/api/daily/${mm}-${dd}-${yr}`;
+const twoAgoUrl = `https://covid19.mathdro.id/api/daily/${mm2}-${dd2}-${yr2}`;
+
+let twoDaysAgoDate = `${dd3} ${mm3}`;
+// grab suffix for day
+switch (dd3) {
+  case 1:
+    twoDaysAgoDate = `${dd3}st ${mm3}`;
+  case 2:
+    twoDaysAgoDate = `${dd3}nd ${mm3}`;
+  case 3:
+    twoDaysAgoDate = `${dd3}rd ${mm3}`;
+  default:
+    twoDaysAgoDate = `${dd3}th ${mm3}`;
+}
 
 export default function Stats({
   countryName,
@@ -43,9 +74,6 @@ export default function Stats({
   const [yTotalStats2, yTotalLoading2, yTotalError2] = useStats(twoAgoUrl);
   const [yStats, setYstats] = useState({});
   const [twoStats, setTwostats] = useState({});
-
-  if (error) return <p>Error fetching: {error}</p>;
-  if (!stats || loading) return <p>Loading...</p>;
 
   const searchStats = () => {
     if (!yTotalStats || !yTotalStats2) return;
@@ -61,12 +89,16 @@ export default function Stats({
 
   useMemo(searchStats, [yTotalStats, yTotalStats2, countryName]);
 
+  if (error) return <p>Error fetching: {error}</p>;
+  if (!stats || loading) return <p>Loading...</p>;
+
   const { confirmed, recovered, deaths } = stats;
   let deathDifference = 0,
     recDifference = 0,
     confirmedDifference = 0;
   if (yStats && twoStats) {
-    confirmedDifference = Number(yStats?.confirmed) - Number(twoStats?.confirmed);
+    confirmedDifference =
+      Number(yStats?.confirmed) - Number(twoStats?.confirmed);
     deathDifference = Number(yStats?.deaths) - Number(twoStats?.deaths);
     recDifference = Number(yStats?.recovered) - Number(twoStats?.recovered);
   }
@@ -74,20 +106,32 @@ export default function Stats({
     <>
       <StatBlock>
         <p>Confirmed: {confirmed?.value}</p>
-        {!!Number(confirmedDifference) && (
-          <Difference>{confirmedDifference} difference</Difference>
+        {!!Number(confirmedDifference) >= 0 && (
+          <Difference color={confirmedDifference < 0 ? "green" : "crimson"}>
+            {confirmedDifference > 0
+              ? `Increased by ${confirmedDifference} from ${twoDaysAgoDate}`
+              : confirmedDifference === 0 && `Same as yesterday`}
+          </Difference>
         )}
       </StatBlock>
       <StatBlock>
         <p>Recovered: {recovered?.value}</p>
-        {!!Number(recDifference) && (
-          <Difference color={Number(recDifference) > 0 ? 'green' : null}>{recDifference} difference</Difference>
+        {!!Number(recDifference) >= 0 && (
+          <Difference color={recDifference < 0 ? "crimson" : "green"}>
+            {recDifference > 0
+              ? `Increased by ${recDifference} from ${twoDaysAgoDate}`
+              : recDifference === 0 && `Same as yesterday`}
+          </Difference>
         )}
       </StatBlock>
       <StatBlock>
         <p>Deaths: {deaths?.value}</p>
-        {!!Number(deathDifference) && (
-          <Difference color={Number(deathDifference) < 0 ? 'green' : null}>{deathDifference} difference</Difference>
+        {!!Number(deathDifference) >= 0 && (
+          <Difference color={deathDifference < 0 ? "green" : "crimson"}>
+            {typeof deathDifference === "number" && deathDifference > 0
+              ? `Increased by ${deathDifference} from ${twoDaysAgoDate}`
+              : deathDifference === 0 && `Same as yesterday`}
+          </Difference>
         )}
       </StatBlock>
     </>
