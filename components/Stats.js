@@ -130,9 +130,10 @@ export default function Stats({
     <>
       <StatBlock>
         <p>Confirmed: {confirmed?.value}</p>
-        {!!Number(confirmedDifference) && (
+        {Number(confirmedDifference) !== "NaN" && (
           <Difference color={isConfirmedIncreased ? "crimson" : "green"}>
-            {typeof confirmedDifference === "number"
+            {typeof confirmedDifference === "number" &&
+            confirmedDifference !== 0
               ? `${
                   confirmedDifference < 0
                     ? `Decreased by ${confirmedDifference * -1} per day`
@@ -144,9 +145,9 @@ export default function Stats({
       </StatBlock>
       <StatBlock>
         <p>Recovered: {recovered?.value}</p>
-        {!!Number(recDifference) && (
+        {Number(recDifference) !== "NaN" && (
           <Difference color={isRecIncreased ? "crimson" : "green"}>
-            {typeof recDifference === "number"
+            {typeof recDifference === "number" && recDifference !== 0
               ? `${
                   recDifference < 0
                     ? `Increased by ${recDifference * -1} per day`
@@ -158,9 +159,9 @@ export default function Stats({
       </StatBlock>
       <StatBlock>
         <p>Deaths: {deaths?.value}</p>
-        {!!Number(deathDifference) && (
+        {Number(deathDifference) !== "NaN" && (
           <Difference color={isDeathIncreased ? "crimson" : "green"}>
-            {typeof deathDifference === "number"
+            {typeof deathDifference === "number" && deathDifference !== 0
               ? `${
                   deathDifference < 0
                     ? `Decreased by ${deathDifference * -1} per day`
