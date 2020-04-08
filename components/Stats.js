@@ -52,17 +52,17 @@ const [
 const yesterdayUrl = `https://covid19.mathdro.id/api/daily/${mm}-${dd}-${yr}`;
 const twoAgoUrl = `https://covid19.mathdro.id/api/daily/${mm2}-${dd2}-${yr2}`;
 
-let twoDaysAgoDate = `${dd3} ${mm3}`;
+let yesterdayDate = `${dd3} ${mm3}`;
 // grab suffix for day
 switch (dd3) {
   case 1:
-    twoDaysAgoDate = `${dd3}st ${mm3}`;
+    yesterdayDate = `${dd3}st ${mm3}`;
   case 2:
-    twoDaysAgoDate = `${dd3}nd ${mm3}`;
+    yesterdayDate = `${dd3}nd ${mm3}`;
   case 3:
-    twoDaysAgoDate = `${dd3}rd ${mm3}`;
+    yesterdayDate = `${dd3}rd ${mm3}`;
   default:
-    twoDaysAgoDate = `${dd3}th ${mm3}`;
+    yesterdayDate = `${dd3}th ${mm3}`;
 }
 
 export default function Stats({
@@ -97,36 +97,61 @@ export default function Stats({
     recDifference = 0,
     confirmedDifference = 0;
   let isDeathIncreased = true;
+  let isRecIncreased = true;
+  let isConfirmedIncreased = true;
   let deathDiffFromYesterday;
   let deathDiffFromTwoDaysAgo;
+  let recDiffFromYesterday;
+  let recDiffFromTwoDaysAgo;
+  let confirmedDiffFromYesterday;
+  let confirmedDiffFromTwoDaysAgo;
   if (yStats && twoStats) {
     deathDiffFromYesterday = Number(deaths?.value) - Number(yStats?.deaths);
-    deathDiffFromTwoDaysAgo = Number(yStats?.deaths) - Number(twoStats?.deaths);
+    deathDiffFromTwoDaysAgo = Number(deaths?.value) - Number(twoStats?.deaths);
     isDeathIncreased = deathDiffFromYesterday > deathDiffFromTwoDaysAgo;
-
-    confirmedDifference =
-      Number(yStats?.confirmed) - Number(twoStats?.confirmed);
     deathDifference = deathDiffFromYesterday - deathDiffFromTwoDaysAgo;
-    recDifference = Number(yStats?.recovered) - Number(twoStats?.recovered);
+
+    recDiffFromYesterday = Number(recovered?.value) - Number(yStats?.recovered);
+    recDiffFromTwoDaysAgo =
+      Number(recovered?.value) - Number(twoStats?.recovered);
+    isRecIncreased = recDiffFromYesterday > recDiffFromTwoDaysAgo;
+    recDifference = recDiffFromYesterday - recDiffFromTwoDaysAgo;
+
+    confirmedDiffFromYesterday =
+      Number(confirmed?.value) - Number(yStats?.confirmed);
+    confirmedDiffFromTwoDaysAgo =
+      Number(confirmed?.value) - Number(twoStats?.confirmed);
+    isConfirmedIncreased =
+      confirmedDiffFromYesterday > confirmedDiffFromTwoDaysAgo;
+    confirmedDifference =
+      confirmedDiffFromYesterday - confirmedDiffFromTwoDaysAgo;
   }
   return (
     <>
       <StatBlock>
         <p>Confirmed: {confirmed?.value}</p>
-        {!!Number(confirmedDifference) >= 0 && (
-          <Difference color={confirmedDifference < 0 ? "green" : "crimson"}>
-            {confirmedDifference > 0
-              ? `Increased by ${confirmedDifference} from ${twoDaysAgoDate}`
+        {!!Number(confirmedDifference) && (
+          <Difference color={isConfirmedIncreased ? "crimson" : "green"}>
+            {typeof confirmedDifference === "number"
+              ? `${
+                  confirmedDifference < 0
+                    ? `Decreased by ${confirmedDifference * -1} per day`
+                    : `Increased by ${confirmedDifference} per day`
+                } from yesterday ${yesterdayDate}`
               : confirmedDifference === 0 && `Same as yesterday`}
           </Difference>
         )}
       </StatBlock>
       <StatBlock>
         <p>Recovered: {recovered?.value}</p>
-        {!!Number(recDifference) >= 0 && (
-          <Difference color={recDifference < 0 ? "crimson" : "green"}>
-            {recDifference > 0
-              ? `Increased by ${recDifference} from ${twoDaysAgoDate}`
+        {!!Number(recDifference) && (
+          <Difference color={isRecIncreased ? "crimson" : "green"}>
+            {typeof recDifference === "number"
+              ? `${
+                  recDifference < 0
+                    ? `Increased by ${recDifference * -1} per day`
+                    : `Decreased by ${recDifference} per day`
+                } from yesterday ${yesterdayDate}`
               : recDifference === 0 && `Same as yesterday`}
           </Difference>
         )}
@@ -140,7 +165,7 @@ export default function Stats({
                   deathDifference < 0
                     ? `Decreased by ${deathDifference * -1} per day`
                     : `Increased by ${deathDifference} per day`
-                } from ${twoDaysAgoDate}`
+                } from yesterday ${yesterdayDate}`
               : deathDifference === 0 && `Same as yesterday`}
           </Difference>
         )}
