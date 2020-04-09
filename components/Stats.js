@@ -100,38 +100,42 @@ export default function Stats({
   let isRecIncreased = true;
   let isConfirmedIncreased = true;
   let deathDiffFromYesterday;
-  let deathDiffFromTwoDaysAgo;
+  let deathDiffFromToday;
   let recDiffFromYesterday;
-  let recDiffFromTwoDaysAgo;
+  let recDiffFromToday;
   let confirmedDiffFromYesterday;
-  let confirmedDiffFromTwoDaysAgo;
+  let confirmedDiffFromToday;
   if (yStats && twoStats) {
-    deathDiffFromYesterday = Number(deaths?.value) - Number(yStats?.deaths);
-    deathDiffFromTwoDaysAgo = Number(deaths?.value) - Number(twoStats?.deaths);
-    isDeathIncreased = deathDiffFromYesterday > deathDiffFromTwoDaysAgo;
-    deathDifference = deathDiffFromYesterday - deathDiffFromTwoDaysAgo;
+    deathDiffFromYesterday = Number(yStats?.deaths) - Number(twoStats?.deaths);
+    deathDiffFromToday = Number(deaths?.value) - Number(twoStats?.deaths);
+    isDeathIncreased = deathDiffFromYesterday < deathDiffFromToday;
+    deathDifference = deathDiffFromYesterday - deathDiffFromToday;
 
-    recDiffFromYesterday = Number(recovered?.value) - Number(yStats?.recovered);
-    recDiffFromTwoDaysAgo =
-      Number(recovered?.value) - Number(twoStats?.recovered);
-    isRecIncreased = recDiffFromYesterday > recDiffFromTwoDaysAgo;
-    recDifference = recDiffFromYesterday - recDiffFromTwoDaysAgo;
+    recDiffFromYesterday =
+      Number(yStats?.recovered) - Number(twoStats?.recovered);
+    recDiffFromToday = Number(recovered?.value) - Number(twoStats?.recovered);
+    isRecIncreased = recDiffFromYesterday < recDiffFromToday;
+    recDifference = recDiffFromYesterday - recDiffFromToday;
 
     confirmedDiffFromYesterday =
-      Number(confirmed?.value) - Number(yStats?.confirmed);
-    confirmedDiffFromTwoDaysAgo =
+      Number(yStats?.confirmed) - Number(twoStats?.confirmed);
+    confirmedDiffFromToday =
       Number(confirmed?.value) - Number(twoStats?.confirmed);
-    isConfirmedIncreased =
-      confirmedDiffFromYesterday > confirmedDiffFromTwoDaysAgo;
-    confirmedDifference =
-      confirmedDiffFromYesterday - confirmedDiffFromTwoDaysAgo;
+    isConfirmedIncreased = confirmedDiffFromYesterday > confirmedDiffFromToday;
+    confirmedDifference = confirmedDiffFromYesterday - confirmedDiffFromToday;
   }
   return (
     <>
       <StatBlock>
         <p>Confirmed: {confirmed?.value}</p>
         {Number(confirmedDifference) !== "NaN" && (
-          <Difference color={isConfirmedIncreased ? "crimson" : "green"}>
+          <Difference
+            color={
+              isConfirmedIncreased || confirmedDifference === 0
+                ? "green"
+                : "crimson"
+            }
+          >
             {typeof confirmedDifference === "number" &&
             confirmedDifference !== 0
               ? `${
@@ -146,12 +150,14 @@ export default function Stats({
       <StatBlock>
         <p>Recovered: {recovered?.value}</p>
         {Number(recDifference) !== "NaN" && (
-          <Difference color={isRecIncreased ? "crimson" : "green"}>
+          <Difference
+            color={!isRecIncreased || recDifference === 0 ? "green" : "crimson"}
+          >
             {typeof recDifference === "number" && recDifference !== 0
               ? `${
                   recDifference < 0
-                    ? `Increased by ${recDifference * -1} per day`
-                    : `Decreased by ${recDifference} per day`
+                    ? `Decreased by ${recDifference * -1} per day`
+                    : `Increased by ${recDifference} per day`
                 } from yesterday ${yesterdayDate}`
               : recDifference === 0 && `Same as yesterday`}
           </Difference>
@@ -163,9 +169,9 @@ export default function Stats({
           <Difference color={isDeathIncreased ? "crimson" : "green"}>
             {typeof deathDifference === "number" && deathDifference !== 0
               ? `${
-                  deathDifference < 0
-                    ? `Decreased by ${deathDifference * -1} per day`
-                    : `Increased by ${deathDifference} per day`
+                  deathDifference > 0
+                    ? `Decreased by ${deathDifference} per day`
+                    : `Increased by ${deathDifference * -1} per day`
                 } from yesterday ${yesterdayDate}`
               : deathDifference === 0 && `Same as yesterday`}
           </Difference>
