@@ -155,7 +155,7 @@ export default function Stats({
         <p>Recovered: {recovered?.value}</p>
         {Number(recDifference) !== "NaN" && (
           <Difference
-            color={!isRecIncreased || recDifference === 0 ? "green" : "crimson"}
+            color={!isRecIncreased || recDifference !== 0 ? "green" : "crimson"}
           >
             {typeof recDifference === "number" && recDifference !== 0
               ? `${
@@ -170,7 +170,11 @@ export default function Stats({
       <StatBlock>
         <p>Deaths: {deaths?.value}</p>
         {Number(deathDifference) !== "NaN" && (
-          <Difference color={isDeathIncreased ? "crimson" : "green"}>
+          <Difference
+            color={
+              isDeathIncreased && deathDifference !== 0 ? "crimson" : "green"
+            }
+          >
             {typeof deathDifference === "number" && deathDifference !== 0
               ? `${
                   deathDifference > 0
