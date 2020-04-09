@@ -80,6 +80,11 @@ const Container = styled.div`
 const Footer = styled.footer`
   background: white;
   grid-column: 1 / -1;
+
+  > i {
+    font-size: 0.8rem;
+    color: #9c6500;
+  }
 `;
 
 const Link = styled.a`
@@ -106,6 +111,10 @@ export default function IndexPage() {
         <Stats />
         <CountrySelector />
         <Footer>
+          <i>
+            *Be aware that this data relies on yesterday's data and might be
+            incomplete depending on the time you watch this
+          </i>
           <p>
             Github:{" "}
             <Link

@@ -105,6 +105,8 @@ export default function Stats({
   let recDiffFromToday;
   let confirmedDiffFromYesterday;
   let confirmedDiffFromToday;
+
+  let confPerDay, recPerDay, deathPerDay;
   if (yStats && twoStats) {
     deathDiffFromYesterday = Number(yStats?.deaths) - Number(twoStats?.deaths);
     deathDiffFromToday = Number(deaths?.value) - Number(twoStats?.deaths);
@@ -140,9 +142,11 @@ export default function Stats({
             confirmedDifference !== 0
               ? `${
                   confirmedDifference < 0
-                    ? `Decreased by ${confirmedDifference * -1} per day`
-                    : `Increased by ${confirmedDifference} per day`
-                } from yesterday ${yesterdayDate}`
+                    ? `Increased by ${
+                        confirmedDifference * -1
+                      } for a total of ${confirmedDiffFromToday} per day*`
+                    : `Decreased by ${confirmedDifference} per day*`
+                }`
               : confirmedDifference === 0 && `Same as yesterday`}
           </Difference>
         )}
@@ -156,9 +160,9 @@ export default function Stats({
             {typeof recDifference === "number" && recDifference !== 0
               ? `${
                   recDifference < 0
-                    ? `Decreased by ${recDifference * -1} per day`
-                    : `Increased by ${recDifference} per day`
-                } from yesterday ${yesterdayDate}`
+                    ? `Decreased by ${recDifference * -1} per day*`
+                    : `Increased by ${recDifference} per day*`
+                }`
               : recDifference === 0 && `Same as yesterday`}
           </Difference>
         )}
@@ -170,9 +174,11 @@ export default function Stats({
             {typeof deathDifference === "number" && deathDifference !== 0
               ? `${
                   deathDifference > 0
-                    ? `Decreased by ${deathDifference} per day`
-                    : `Increased by ${deathDifference * -1} per day`
-                } from yesterday ${yesterdayDate}`
+                    ? `Decreased by ${deathDifference} per day*`
+                    : `Increased by ${
+                        deathDifference * -1
+                      } for a total of ${deathDiffFromToday} per day*`
+                }`
               : deathDifference === 0 && `Same as yesterday`}
           </Difference>
         )}
