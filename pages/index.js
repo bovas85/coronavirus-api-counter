@@ -108,7 +108,7 @@ export default function IndexPage() {
         <Heading>
           <h2>Global view:</h2>
         </Heading>
-        <Stats />
+        <Stats coloursEnabled={false} />
         <CountrySelector />
         <Footer>
           <i>

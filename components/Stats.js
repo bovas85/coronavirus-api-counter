@@ -14,7 +14,8 @@ const StatBlock = styled.div`
 
 const Difference = styled.p`
   font-size: 0.9rem;
-  color: ${({ color = "crimson" }) => color};
+  color: ${({ coloursEnabled, color = "crimson" }) =>
+    coloursEnabled ? color : "black"};
 `;
 // ------------------------------------------
 
@@ -68,6 +69,7 @@ switch (dd3) {
 export default function Stats({
   countryName,
   url = "https://covid19.mathdro.id/api",
+  coloursEnabled = true,
 }) {
   const [stats, loading, error] = useStats(url);
   const [yTotalStats, yTotalLoading, yTotalError] = useStats(yesterdayUrl);
@@ -116,7 +118,7 @@ export default function Stats({
     recDiffFromYesterday =
       Number(yStats?.recovered) - Number(twoStats?.recovered);
     recDiffFromToday = Number(recovered?.value) - Number(twoStats?.recovered);
-    isRecIncreased = recDiffFromYesterday < recDiffFromToday;
+    isRecIncreased = recDiffFromYesterday > recDiffFromToday;
     recDifference = recDiffFromYesterday - recDiffFromToday;
 
     confirmedDiffFromYesterday =
@@ -137,6 +139,7 @@ export default function Stats({
                 ? "green"
                 : "crimson"
             }
+            coloursEnabled={coloursEnabled}
           >
             {typeof confirmedDifference === "number" &&
             confirmedDifference !== 0
@@ -147,7 +150,9 @@ export default function Stats({
                       } for a total of ${confirmedDiffFromToday} per day*`
                     : `Decreased by ${confirmedDifference} per day*`
                 }`
-              : confirmedDifference === 0 && `Same as yesterday`}
+              : confirmedDifference === 0 &&
+                coloursEnabled &&
+                `Same as yesterday`}
           </Difference>
         )}
       </StatBlock>
@@ -155,7 +160,8 @@ export default function Stats({
         <p>Recovered: {recovered?.value}</p>
         {Number(recDifference) !== "NaN" && (
           <Difference
-            color={!isRecIncreased || recDifference !== 0 ? "green" : "crimson"}
+            color={!isRecIncreased || recDifference === 0 ? "crimson" : "green"}
+            coloursEnabled={coloursEnabled}
           >
             {typeof recDifference === "number" && recDifference !== 0
               ? `${
@@ -163,7 +169,7 @@ export default function Stats({
                     ? `Decreased by ${recDifference * -1} per day*`
                     : `Increased by ${recDifference} per day*`
                 }`
-              : recDifference === 0 && `Same as yesterday`}
+              : recDifference === 0 && coloursEnabled && `Same as yesterday`}
           </Difference>
         )}
       </StatBlock>
@@ -174,6 +180,7 @@ export default function Stats({
             color={
               isDeathIncreased && deathDifference !== 0 ? "crimson" : "green"
             }
+            coloursEnabled={coloursEnabled}
           >
             {typeof deathDifference === "number" && deathDifference !== 0
               ? `${
@@ -183,7 +190,7 @@ export default function Stats({
                         deathDifference * -1
                       } for a total of ${deathDiffFromToday} per day*`
                 }`
-              : deathDifference === 0 && `Same as yesterday`}
+              : deathDifference === 0 && coloursEnabled && `Same as yesterday`}
           </Difference>
         )}
       </StatBlock>
