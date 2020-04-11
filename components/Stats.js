@@ -1,7 +1,8 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
-
-import useStats from "../utils/useStats";
 import styled from "styled-components";
+
+import useDifference from "../utils/useDifference";
+import useStats from "../utils/useStats";
 
 /* local styles ---------- */
 const StatBlock = styled.div`
@@ -22,6 +23,7 @@ const Difference = styled.p`
 // date - 1/2 days
 const yesterday = new Date(Date.now() - 864e5);
 const twoAgo = new Date(Date.now() - 864e5 * 2);
+const threeAgo = new Date(Date.now() - 864e5 * 3);
 
 const dtf = new Intl.DateTimeFormat("en", {
   year: "numeric",
@@ -40,6 +42,9 @@ const [{ value: mm }, , { value: dd }, , { value: yr }] = dtf.formatToParts(
 const [{ value: mm2 }, , { value: dd2 }, , { value: yr2 }] = dtf.formatToParts(
   twoAgo
 );
+const [{ value: mm4 }, , { value: dd4 }, , { value: yr4 }] = dtf.formatToParts(
+  threeAgo
+);
 
 // pretty date to display
 const [
@@ -52,6 +57,7 @@ const [
 
 const yesterdayUrl = `https://covid19.mathdro.id/api/daily/${mm}-${dd}-${yr}`;
 const twoAgoUrl = `https://covid19.mathdro.id/api/daily/${mm2}-${dd2}-${yr2}`;
+const threeAgoUrl = `https://covid19.mathdro.id/api/daily/${mm4}-${dd4}-${yr4}`;
 
 let yesterdayDate = `${dd3} ${mm3}`;
 // grab suffix for day
@@ -74,11 +80,13 @@ export default function Stats({
   const [stats, loading, error] = useStats(url);
   const [yTotalStats, yTotalLoading, yTotalError] = useStats(yesterdayUrl);
   const [yTotalStats2, yTotalLoading2, yTotalError2] = useStats(twoAgoUrl);
+  const [yTotalStats3, yTotalLoading3, yTotalError3] = useStats(threeAgoUrl);
   const [yStats, setYstats] = useState({});
   const [twoStats, setTwostats] = useState({});
+  const [threeStats, setThreestats] = useState({});
 
   const searchStats = () => {
-    if (!yTotalStats || !yTotalStats2) return;
+    if (!yTotalStats || !yTotalStats2 || !yTotalStats3) return;
     const res = yTotalStats.find((stat) => {
       return stat.combinedKey === countryName;
     });
@@ -87,47 +95,31 @@ export default function Stats({
       return stat.combinedKey === countryName;
     });
     setTwostats(res2);
+    const res3 = yTotalStats3.find((stat) => {
+      return stat.combinedKey === countryName;
+    });
+    setThreestats(res3);
   };
 
-  useMemo(searchStats, [yTotalStats, yTotalStats2, countryName]);
+  useMemo(searchStats, [yTotalStats, yTotalStats2, yTotalStats3, countryName]);
 
   if (error) return <p>Error fetching: {error}</p>;
   if (!stats || loading) return <p>Loading...</p>;
 
   const { confirmed, recovered, deaths } = stats;
-  let deathDifference = 0,
-    recDifference = 0,
-    confirmedDifference = 0;
-  let isDeathIncreased = true;
-  let isRecIncreased = true;
-  let isConfirmedIncreased = true;
-  let deathDiffFromYesterday;
-  let deathDiffFromToday;
-  let recDiffFromYesterday;
-  let recDiffFromToday;
-  let confirmedDiffFromYesterday;
-  let confirmedDiffFromToday;
 
-  let confPerDay, recPerDay, deathPerDay;
-  if (yStats && twoStats) {
-    deathDiffFromYesterday = Number(yStats?.deaths) - Number(twoStats?.deaths);
-    deathDiffFromToday = Number(deaths?.value) - Number(twoStats?.deaths);
-    isDeathIncreased = deathDiffFromYesterday < deathDiffFromToday;
-    deathDifference = deathDiffFromYesterday - deathDiffFromToday;
+  const {
+    deathDifference,
+    recDifference,
+    confirmedDifference,
+    isDeathIncreased,
+    isRecIncreased,
+    isConfirmedIncreased,
+    deathDiffFromToday,
+    recDiffFromToday,
+    confirmedDiffFromToday,
+  } = useDifference(stats, yStats, twoStats, threeStats);
 
-    recDiffFromYesterday =
-      Number(yStats?.recovered) - Number(twoStats?.recovered);
-    recDiffFromToday = Number(recovered?.value) - Number(twoStats?.recovered);
-    isRecIncreased = recDiffFromYesterday > recDiffFromToday;
-    recDifference = recDiffFromYesterday - recDiffFromToday;
-
-    confirmedDiffFromYesterday =
-      Number(yStats?.confirmed) - Number(twoStats?.confirmed);
-    confirmedDiffFromToday =
-      Number(confirmed?.value) - Number(twoStats?.confirmed);
-    isConfirmedIncreased = confirmedDiffFromYesterday > confirmedDiffFromToday;
-    confirmedDifference = confirmedDiffFromYesterday - confirmedDiffFromToday;
-  }
   return (
     <>
       <StatBlock>
