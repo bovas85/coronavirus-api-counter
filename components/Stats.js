@@ -178,9 +178,9 @@ export default function Stats({
               ? `${
                   deathDifference > 0
                     ? `Decreased by ${deathDifference} per day*`
-                    : `Increased by ${
-                        deathDifference * -1
-                      } for a total of ${deathDiffFromToday} per day*`
+                    : `Increased by ${deathDifference * -1} for a total of ${
+                        deathDiffFromToday * -1
+                      } per day*`
                 }`
               : deathDifference === 0 && coloursEnabled && `Same as yesterday`}
           </Difference>
